@@ -16,6 +16,18 @@ const TeamType = new GraphQLObjectType({
   })
 });
 
+const GameType = new GraphQLObjectType({
+  name: "Game",
+  fields: () => ({
+    date: { type: GraphQLString },
+    id: { type: GraphQLInt },
+    home_team_score: { type: GraphQLInt },
+    visitor_team_score: { type: GraphQLInt },
+    home_team: { type: TeamType },
+    visitor_team: { type: TeamType }
+  })
+});
+
 const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
@@ -28,6 +40,54 @@ const RootQuery = new GraphQLObjectType({
           );
           const data = await response;
           return data.data.data;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    team: {
+      type: TeamType,
+      args: {
+        id: { type: GraphQLInt }
+      },
+      async resolve(parent, args) {
+        try {
+          const response = await axios.get(
+            `https://www.balldontlie.io/api/v1/teams/${args.id}`
+          );
+          const data = await response;
+          return data.data;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    games: {
+      type: new GraphQLList(GameType),
+      async resolve(parent, args) {
+        try {
+          const response = await axios.get(
+            "https://www.balldontlie.io/api/v1/games"
+          );
+          const data = await response;
+          return data.data.data;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    game: {
+      type: GameType,
+      args: {
+        id: { type: GraphQLInt }
+      },
+      async resolve(parent, args) {
+        try {
+          const response = await axios.get(
+            `https://www.balldontlie.io/api/v1/games/${args.id}`
+          );
+          const data = await response;
+          return data.data;
         } catch (error) {
           console.log(error);
         }
