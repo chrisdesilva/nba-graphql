@@ -12,7 +12,10 @@ const TeamType = new GraphQLObjectType({
   fields: () => ({
     city: { type: GraphQLString },
     id: { type: GraphQLInt },
-    name: { type: GraphQLString }
+    name: { type: GraphQLString },
+    conference: { type: GraphQLString },
+    division: { type: GraphQLString },
+    full_name: { type: GraphQLString }
   })
 });
 

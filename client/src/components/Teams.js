@@ -16,21 +16,21 @@ const TEAMS_QUERY = gql`
 
 export default function Teams(props) {
   return (
-    <Fragment>
+    <div className="flex flex-col items-center">
       <h1>All NBA Teams</h1>
       <Query query={TEAMS_QUERY}>
         {({ loading, error, data }) => {
           if (loading) return <p>Loading...</p>;
           if (error) console.log(error);
           return (
-            <Fragment>
+            <div>
               {data.teams.map(team => (
-                <TeamCard key={team.name} team={team} />
+                <TeamCard key={team.id} team={team} />
               ))}
-            </Fragment>
+            </div>
           );
         }}
       </Query>
-    </Fragment>
+    </div>
   );
 }
