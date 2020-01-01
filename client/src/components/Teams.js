@@ -1,36 +1,31 @@
 import React, { Fragment } from "react";
 import gql from "graphql-tag";
-import { Query } from "react-apollo";
-import { Link } from "react-router-dom";
+import { useQuery } from "@apollo/react-hooks";
 import TeamCard from "./TeamCard";
 
-const TEAMS_QUERY = gql`
-  query TeamsQuery {
-    teams {
-      city
-      id
-      name
+export default function Teams() {
+  const TEAMS_QUERY = gql`
+    query TeamsQuery {
+      teams {
+        city
+        id
+        name
+      }
     }
-  }
-`;
+  `;
 
-export default function Teams(props) {
+  const { loading, error, data } = useQuery(TEAMS_QUERY);
+  if (loading) return <p>Loading...</p>;
+  if (error) console.log(error);
+
   return (
     <div className="flex flex-col items-center">
       <h1>All NBA Teams</h1>
-      <Query query={TEAMS_QUERY}>
-        {({ loading, error, data }) => {
-          if (loading) return <p>Loading...</p>;
-          if (error) console.log(error);
-          return (
-            <div>
-              {data.teams.map(team => (
-                <TeamCard key={team.id} team={team} />
-              ))}
-            </div>
-          );
-        }}
-      </Query>
+      <Fragment>
+        {data.teams.map(team => (
+          <TeamCard key={team.id} team={team} />
+        ))}
+      </Fragment>
     </div>
   );
 }

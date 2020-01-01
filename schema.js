@@ -6,6 +6,7 @@ const {
   GraphQLList,
   GraphQLSchema
 } = require("graphql");
+const moment = require("moment");
 
 const TeamType = new GraphQLObjectType({
   name: "Team",
@@ -67,10 +68,19 @@ const RootQuery = new GraphQLObjectType({
     },
     games: {
       type: new GraphQLList(GameType),
+      args: {
+        id: { type: GraphQLInt }
+      },
       async resolve(parent, args) {
         try {
           const response = await axios.get(
-            "https://www.balldontlie.io/api/v1/games"
+            `https://www.balldontlie.io/api/v1/games?team_ids[]=${
+              args.id
+            }&start_date=${moment()
+              .subtract(7, "days")
+              .format("YYYY-MM-DD")}&end_date=${moment()
+              .add(7, "days")
+              .format("YYYY-MM-DD")}`
           );
           const data = await response;
           return data.data.data;
