@@ -3,7 +3,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import logo from "./nba.png";
-import Teams from "./components/Teams";
+import Games from "./components/Games";
 import Team from "./components/Team";
 
 const client = new ApolloClient({
@@ -14,11 +14,13 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div className="flex justify-center">
-          <img src={logo} alt="NBA logo" />
+        <div className="flex flex-col justify-center items-center h-screen">
+          <div className="flex justify-center mb-8">
+            <img src={logo} alt="NBA logo" />
+          </div>
+          <Route exact path="/" component={Games} />
+          <Route exact path="/teams/:id" component={Team} />
         </div>
-        <Route exact path="/" component={Teams} />
-        <Route exact path="/teams/:id" component={Team} />
       </Router>
     </ApolloProvider>
   );

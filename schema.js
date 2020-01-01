@@ -28,7 +28,8 @@ const GameType = new GraphQLObjectType({
     home_team_score: { type: GraphQLInt },
     visitor_team_score: { type: GraphQLInt },
     home_team: { type: TeamType },
-    visitor_team: { type: TeamType }
+    visitor_team: { type: TeamType },
+    status: { type: GraphQLString }
   })
 });
 
@@ -66,7 +67,22 @@ const RootQuery = new GraphQLObjectType({
         }
       }
     },
-    games: {
+    allGames: {
+      type: new GraphQLList(GameType),
+      args: { date: { type: GraphQLString } },
+      async resolve(parent, args) {
+        try {
+          const response = await axios.get(
+            `https://www.balldontlie.io/api/v1/games/?start_date=${args.date}&end_date=${args.date}`
+          );
+          const data = await response;
+          return data.data.data;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+    teamGames: {
       type: new GraphQLList(GameType),
       args: {
         id: { type: GraphQLInt }
@@ -84,23 +100,6 @@ const RootQuery = new GraphQLObjectType({
           );
           const data = await response;
           return data.data.data;
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    },
-    game: {
-      type: GameType,
-      args: {
-        id: { type: GraphQLInt }
-      },
-      async resolve(parent, args) {
-        try {
-          const response = await axios.get(
-            `https://www.balldontlie.io/api/v1/games/${args.id}`
-          );
-          const data = await response;
-          return data.data;
         } catch (error) {
           console.log(error);
         }
